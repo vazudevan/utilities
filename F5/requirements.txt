@@ -1,0 +1,3 @@
+setuptools
+f5-sdk
+python-dateutil
