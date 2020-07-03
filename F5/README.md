@@ -1,8 +1,8 @@
 # List F5 SSL certificate status
-This script `` lists all certificates hosted on F5 ltm and their status
+This script `list-f5-certficate-expiry.py` lists all certificates hosted on F5 ltm and their status
 
 ## Usage
-IP address or fqdn of F5 management interface is mandatory. If username and passwords are not provided it will default to admin and prompt for password.  The threshold period for verifying certificates defaults to 6 weeks, optionally you can modify this with the --threshold argument.
+IP address or fqdn of F5 management interface is mandatory. If username and passwords are not provided it will default to admin and prompt for password.  The threshold period for verifying certificates defaults to 6 weeks, optionally you can modify this with the `--threshold` argument.
 
 ```
 usage: list-f5-certficate-expiry.py [-h] --f5-ltm F5_LTM [--username USERNAME] [--password PASSWORD]
