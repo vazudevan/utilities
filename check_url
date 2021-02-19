@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+stdin_to_args() {
+    # convert stdin to args, takes only the first column
+    # credits: bma
+    #
+    # local arguments=$(stdin_to_args "$@" ) # Append to arg list
+    # local arguments=$(stdin_to_args)       # only take from stdin
+    #
+    local skimmed_stdin="$([[ -t 0 ]] || awk 'ORS=" " { print $1 }')"
+    printf -- '%s %s' "$*" "$skimmed_stdin" | awk '{$1=$1;print}'
+}
+
+check_url_access(){
+    ERRTMP=/tmp/errorfromtest
+    LRED="\033[1;31m" # Light Red
+    LGREEN="\033[1;32m" # Light Green
+    NC='\033[0m' # No Color
+
+    # -I Reterive only headers, not body
+    # -s silent output
+    # -S print errors
+    # -L follow redirects
+    # -w custom outputs
+    # -m max time for all stages --max-time
+
+    #status=$(curl "$URL" -IsSL -w "%{http_code} %{num_redirects} %{total_time}" -o /dev/null/ 2> $ERRTMP)
+    curl "${1}" -IsSL -m3  -o /dev/null 2> $ERRTMP
+
+    if [ $? -eq 0 ];then
+        echo -e "${LGREEN}SUCCESS${NC} ${1}"
+    else
+        ERRSTR=$(head -1 $ERRTMP | sed 's/curl: ([0-9]*) //')
+        echo -e "${LRED}ERROR${NC} ${1} ${ERRSTR}"
+    fi
+}
+
+URLS=$(stdin_to_args "$@")
+
+for url in $URLS
+do
+    # remove domain prefix such as *. and . if any
+    url=${url#\*}
+    url=${url#\.}
+    check_url_access $url
+done
